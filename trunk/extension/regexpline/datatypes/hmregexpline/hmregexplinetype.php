@@ -73,6 +73,7 @@ class hmregexplinetype extends eZDataType
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $helpName = $base . "_hmregexpline_helptext_" . $classAttribute->attribute( 'id' );
+        $patternName = $base . "_hmregexpline_patternselect_" . $classAttribute->attribute( 'id' );
 
         $content = $classAttribute->content();
 
@@ -85,7 +86,20 @@ class hmregexplinetype extends eZDataType
         {
             $content['help_text'] = $http->postVariable( $helpName );
         }
+        
+        if( $http->hasPostVariable( $patternName ) )
+        {
+            $content['pattern_selection'] = $http->postVariable( $patternName );
+        }
+        else if( $http->hasPostVariable( 'ContentClassHasInput' ) )
+        {
+            $content['pattern_selection'] = array();
+        }
 
+        $subPatternCount = @preg_match_all( "/\((?!\?\:)/", $content['regexp'], $matches );
+        
+        $content['subpattern_count'] = $subPatternCount == false ? 0 : $subPatternCount;
+        
         $classAttribute->setContent( $content );
         $classAttribute->store();
         
@@ -106,7 +120,9 @@ class hmregexplinetype extends eZDataType
         if( !is_array( $content ) )
         {
             $content = array( 'regexp' => '',
-                              'help_text' => '' );
+                              'help_text' => '',
+                              'subpattern_count' => 0,
+                              'pattern_selection' => array() );
         }
         
         return $content;
@@ -194,7 +210,32 @@ class hmregexplinetype extends eZDataType
     */
     function title( &$contentObjectAttribute )
     {
-        return $contentObjectAttribute->attribute( 'data_text' );
+        $classAttribute =& $contentObjectAttribute->contentClassAttribute();
+        $classContent = $classAttribute->content();
+        $content = $contentObjectAttribute->content();
+        $index = "";
+
+        if( is_array( $classContent['pattern_selection'] ) and count( $classContent['pattern_selection'] ) > 0 )
+        {
+            $res = @preg_match( $classContent['regexp'], $content, $matches );
+
+            if( $res !== false )
+            {
+                foreach( $classContent['pattern_selection'] as $patternIndex )
+                {
+                    if( isset( $matches[$patternIndex] ) )
+                    {
+                        $index .= $matches[$patternIndex];
+                    }
+                }
+            }
+        }
+        else
+        {
+            $index = $content;
+        }
+
+        return $index;
     }
 
     /*!
