@@ -21,7 +21,7 @@
             {/section}
             </select>
         {section-else}
-            <i>No subpatterns defined. Using the complete expression.</i>
+            <p><i>No subpatterns defined. Using the complete expression.</i></p>
         {/section}
     </div>
 </div>

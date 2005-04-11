@@ -149,7 +149,7 @@ class hmregexplinetype extends eZDataType
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
             
-            if( @preg_match( $classContent['regexp'], $text ) === 0 )
+            if( !empty( $text ) and @preg_match( $classContent['regexp'], $text ) === 0 )
             {
                 // No match
                 $contentObjectAttribute->setValidationError( 'Your input did not meet the requirements.' );
@@ -195,6 +195,26 @@ class hmregexplinetype extends eZDataType
     function &objectAttributeContent( &$contentObjectAttribute )
     {
         return $contentObjectAttribute->attribute( 'data_text' );
+    }
+    
+    function validateCollectionAttributeHTTPInput( &$http, $base, &$objectAttribute )
+    {
+        $status = $this->validateObjectAttributeHTTPInput( $http, $base, $objectAttribute );
+
+        return $status;
+    }
+    
+    function fetchCollectionAttributeHTTPInput( &$collection, &$collectionAttribute, &$http, $base, &$contentObjectAttribute )
+    {
+        $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
+
+        if( $http->hasPostVariable( $textName ) )
+        {
+            $text = $http->postVariable( $textName );
+            $collectionAttribute->setAttribute( 'data_text', $text );
+            return true;
+        }
+        return false;
     }
 
     /*!
@@ -246,6 +266,10 @@ class hmregexplinetype extends eZDataType
         return true;
     }
 
+    function isInformationCollector()
+    {
+        return true;
+    }
 }
 
 eZDataType::register( EZ_DATATYPESTRING_REGEXPLINE, "hmregexplinetype" );
