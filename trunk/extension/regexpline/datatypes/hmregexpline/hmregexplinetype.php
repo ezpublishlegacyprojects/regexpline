@@ -179,7 +179,9 @@ class hmregexplinetype extends eZDataType
         if( $http->hasPostVariable( $textName ) )
         {
             $text = $http->postVariable( $textName );
-            $contentObjectAttribute->setAttribute( 'data_text', $text );
+            //$contentObjectAttribute->setAttribute( 'data_text', $text );
+            $contentObjectAttribute->setContent( $text );
+            $contentObjectAttribute->storeData();
             return true;
         }
         return false;
@@ -187,6 +189,9 @@ class hmregexplinetype extends eZDataType
 
     function storeObjectAttribute( &$contentObjectAttribute )
     {
+        $text = $contentObjectAttribute->content();
+        
+        $contentObjectAttribute->setAttribute( 'data_text', $text );
     }
 
     /*!
@@ -269,6 +274,18 @@ class hmregexplinetype extends eZDataType
     function isInformationCollector()
     {
         return true;
+    }
+    
+    function &sortKey( &$contentObjectAttribute )
+    {
+        $text = $contentObjectAttribute->content();
+        
+        return $text;
+    }
+    
+    function &sortKeyType()
+    {
+        return 'string';
     }
 }
 
