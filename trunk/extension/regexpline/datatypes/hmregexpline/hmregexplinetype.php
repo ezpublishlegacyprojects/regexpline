@@ -23,7 +23,7 @@
   \date    Thursday 17 March 2005 2:22:55 pm
   \author  Hans Melis
 
-  By using regexpline you can ...
+  By using regexpline you can ... do stuff :)
 
 */
 
@@ -138,12 +138,23 @@ class hmregexplinetype extends eZDataType
         $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
         $classAttribute =& $contentObjectAttribute->contentClassAttribute();
         
+        $required = false;
+
+        if( method_exists( $contentObjectAttribute, 'validateIsRequired' ) )
+        {
+            $required = $contentObjectAttribute->validateIsRequired();
+        }
+        else
+        {
+            $required = ( $classAttribute->attribute( 'is_required' ) == 1 );
+        }
+        
         if( $http->hasPostVariable( $textName ) )
         {
             $text = $http->postVariable( $textName );
             $classContent = $classAttribute->content();
-            
-            if( empty( $text ) and $classAttribute->attribute( 'is_required' ) == 1 )
+
+            if( empty( $text ) and $required === true )
             {
                 $contentObjectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
@@ -158,7 +169,7 @@ class hmregexplinetype extends eZDataType
         }
         else
         {
-            if( $classAttribute->attribute( 'is_required' ) == 1 )
+            if( $required === true )
             {
                 $contentObjectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
@@ -199,7 +210,9 @@ class hmregexplinetype extends eZDataType
     */
     function &objectAttributeContent( &$contentObjectAttribute )
     {
-        return $contentObjectAttribute->attribute( 'data_text' );
+        $text = $contentObjectAttribute->attribute( 'data_text' );
+        
+        return $text;
     }
     
     function validateCollectionAttributeHTTPInput( &$http, $base, &$objectAttribute )
