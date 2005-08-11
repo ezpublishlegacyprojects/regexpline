@@ -1,8 +1,8 @@
 <?php
 
 /*
-    Regular Expression Line extension for eZ publish 3.x
-    Copyright (C) 2005 Hans Melis
+    Regular Expression datatype for eZ publish 3.x
+    Copyright (C) 2005  Hans Melis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 */
 
