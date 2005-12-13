@@ -49,17 +49,36 @@ class hmregexplinetype extends eZDataType
     function validateClassAttributeHTTPInput( &$http, $base, &$classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
+        $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
         
+        $regexp = $preset = '';
+
         if( $http->hasPostVariable( $regexpName ) )
         {
             $regexp = $http->postVariable( $regexpName );
-            
-            $check = @preg_match( $regexp, 'Dummy string' );
-            
-            if( $check === false )
+        }
+
+        if( $http->hasPostVariable( $presetName ) )
+        {
+            $preset = $http->postVariable( $presetName );
+        }
+        
+        if( !empty( $preset ) )
+        {
+            $ini =& eZINI::instance( 'regexpline.ini' );
+            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
+
+            if( isset( $presets[$preset] ) )
             {
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            $regexp = $presets[$preset];
             }
+        }        
+
+        $check = @preg_match( $regexp, 'Dummy string' );
+            
+        if( $check === false )
+        {
+            return EZ_INPUT_VALIDATOR_STATE_INVALID;
         }
 
         return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
@@ -74,12 +93,18 @@ class hmregexplinetype extends eZDataType
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $helpName = $base . "_hmregexpline_helptext_" . $classAttribute->attribute( 'id' );
         $patternName = $base . "_hmregexpline_patternselect_" . $classAttribute->attribute( 'id' );
+        $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' ); 
 
         $content = $classAttribute->content();
 
         if( $http->hasPostVariable( $regexpName ) )
         {
             $content['regexp'] = $http->postVariable( $regexpName );
+        }
+
+        if( $http->hasPostVariable( $presetName ) )
+        {
+            $content['preset'] = $http->postVariable( $presetName );
         }
         
         if( $http->hasPostVariable( $helpName ) )
@@ -96,7 +121,23 @@ class hmregexplinetype extends eZDataType
             $content['pattern_selection'] = array();
         }
 
-        $subPatternCount = @preg_match_all( "/\((?!\?\:)/", $content['regexp'], $matches );
+        $regexp = $content['regexp'];
+
+        if( !empty( $content['preset'] ) )
+        {
+            $ini =& eZINI::instance( 'regexpline.ini' );
+            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
+
+            if( isset( $presets[$content['preset']] ) )
+            {
+                $regexp = $presets[$content['preset']];
+
+                // Clear the regular expression in the content
+                $content['regexp'] = '';
+            }
+        }
+    
+        $subPatternCount = @preg_match_all( "/\((?!\?\:)/", $regexp, $matches );
         
         $content['subpattern_count'] = $subPatternCount == false ? 0 : $subPatternCount;
         
@@ -120,6 +161,7 @@ class hmregexplinetype extends eZDataType
         if( !is_array( $content ) )
         {
             $content = array( 'regexp' => '',
+                              'preset' => '',
                               'help_text' => '',
                               'subpattern_count' => 0,
                               'pattern_selection' => array() );
@@ -135,48 +177,9 @@ class hmregexplinetype extends eZDataType
     */
     function validateObjectAttributeHTTPInput( &$http, $base, &$contentObjectAttribute )
     {
-        $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
-        $classAttribute =& $contentObjectAttribute->contentClassAttribute();
-        
-        $required = false;
+        $status = $this->validateAttributeHTTPInput( $http, $base, $contentObjectAttribute, false );
 
-        if( method_exists( $contentObjectAttribute, 'validateIsRequired' ) )
-        {
-            $required = $contentObjectAttribute->validateIsRequired();
-        }
-        else
-        {
-            $required = ( $classAttribute->attribute( 'is_required' ) == 1 );
-        }
-        
-        if( $http->hasPostVariable( $textName ) )
-        {
-            $text = $http->postVariable( $textName );
-            $classContent = $classAttribute->content();
-
-            if( empty( $text ) and $required === true )
-            {
-                $contentObjectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
-            }
-            
-            if( !empty( $text ) and @preg_match( $classContent['regexp'], $text ) === 0 )
-            {
-                // No match
-                $contentObjectAttribute->setValidationError( 'Your input did not meet the requirements.' );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
-            }
-        }
-        else
-        {
-            if( $required === true )
-            {
-                $contentObjectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
-            }
-        }
-        
-        return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
+        return $status;
     }
 
     /*!
@@ -190,7 +193,6 @@ class hmregexplinetype extends eZDataType
         if( $http->hasPostVariable( $textName ) )
         {
             $text = $http->postVariable( $textName );
-            //$contentObjectAttribute->setAttribute( 'data_text', $text );
             $contentObjectAttribute->setContent( $text );
             $contentObjectAttribute->storeData();
             return true;
@@ -214,10 +216,57 @@ class hmregexplinetype extends eZDataType
         
         return $text;
     }
+
+    function validateAttributeHTTPInput( &$http, $base, &$objectAttribute, $isInformationCollector = false )
+    {
+        $textName = $base . "_hmregexpline_data_text_" . $objectAttribute->attribute( 'id' );
+        $classAttribute =& $objectAttribute->contentClassAttribute();
+        
+        $required = false;
+        $must_validate = ( $isInformationCollector == $classAttribute->attribute( 'is_information_collector' ) );
+
+        if( method_exists( $objectAttribute, 'validateIsRequired' ) )
+        {
+            $required = $objectAttribute->validateIsRequired();
+        }
+        else
+        {
+            $required = ( $classAttribute->attribute( 'is_required' ) == 1 );
+        }
+        
+        if( $http->hasPostVariable( $textName ) )
+        {
+            $text = $http->postVariable( $textName );
+            $classContent = $classAttribute->content();
+
+            if( empty( $text ) and ( $required === true && $must_validate === true ) )
+            {
+                $objectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
+                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            }
+            
+        if( !empty( $text ) and @preg_match( $this->getRegularExpression( $classContent ), $text ) === 0 )
+            {
+                // No match
+                $objectAttribute->setValidationError( 'Your input did not meet the requirements.' );
+                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            }
+        }
+        else
+        {
+            if( $required === true && $must_validate === true )
+            {
+                $objectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
+                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            }
+        }
+        
+        return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
+    }
     
     function validateCollectionAttributeHTTPInput( &$http, $base, &$objectAttribute )
     {
-        $status = $this->validateObjectAttributeHTTPInput( $http, $base, $objectAttribute );
+        $status = $this->validateAttributeHTTPInput( $http, $base, $objectAttribute, true );
 
         return $status;
     }
@@ -255,7 +304,7 @@ class hmregexplinetype extends eZDataType
 
         if( is_array( $classContent['pattern_selection'] ) and count( $classContent['pattern_selection'] ) > 0 )
         {
-            $res = @preg_match( $classContent['regexp'], $content, $matches );
+            $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
 
             if( $res !== false )
             {
@@ -299,6 +348,25 @@ class hmregexplinetype extends eZDataType
     function &sortKeyType()
     {
         return 'string';
+    }
+
+    function getRegularExpression( &$classContent )
+    {
+        $regexp = $classContent['regexp'];
+
+        if( !empty( $classContent['preset'] ) )
+        {
+            $ini =& eZINI::instance( 'regexpline.ini' );
+            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
+
+            if( isset( $presets[$classContent['preset']] ) )
+            {
+                $regexp = $presets[$classContent['preset']];
+            }
+        
+        }
+
+        return $regexp;
     }
 }
 

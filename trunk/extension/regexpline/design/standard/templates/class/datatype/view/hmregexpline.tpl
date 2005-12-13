@@ -1,10 +1,11 @@
-{let content=$class_attribute.content}
+{def $content=$class_attribute.content
+     $presets=ezini( 'GeneralSettings', 'RegularExpressions', 'regexpline.ini' )}
 
 <div class="block">
 
     <div class="element">
         <label>Regular expression:</label>
-        <p>{$content.regexp|wash}</p>
+        {if $content.preset|ne('')}{$presets[$content.preset]|wash}{else}<p>{$content.regexp|wash}</p>{/if}
     </div>
     
 </div>
@@ -26,4 +27,4 @@
     
 </div>
 
-{/let}
+{undef $content $presets}
