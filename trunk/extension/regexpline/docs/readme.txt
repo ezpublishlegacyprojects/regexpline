@@ -1,4 +1,4 @@
-Datatype extension for eZ publish 3.4+ (License: GPL)
+Datatype extension for eZ publish 3.6+ (License: GPL)
 -----------------------------------------------------
 
 Provides a regular expression datatype for eZ publish.
@@ -21,13 +21,13 @@ Features
 - Required checks compatible with newer eZ publish versions (drafts ignore required fields)
 - Information collection support
 - Attribute filtering support
+- Ability to define preset regular expressions in an ini file
 
 
 Planned Features
 ----------------
 These features are NOT available yet, but they're coming.
 
-- Ability to choose from a set of predefined regular expressions
 - Contentclass import & export
 (- Support for multiple regular expressions)*
 (- i18n support)*
@@ -37,7 +37,7 @@ These features are NOT available yet, but they're coming.
 
 Requirements
 ------------
-- A suitable eZ publish version: 3.5.0 and up; 3.6.x recommended. 3.4.x might also work but is untested.
+- A suitable eZ publish version: 3.6.x; 3.7.x might also work but is untested.
 - Knowledge of Perl Compatible Regular Expression syntax (http://www.php.net/manual/en/ref.pcre.php)
 
 
@@ -75,7 +75,7 @@ Please note that this datatype has been developed in my spare time, and is suppl
 Copyright
 ---------
 
-Regular Expression datatype for eZ publish 3.x
+Regular Expression datatype for eZ publish 3.6+
 Copyright (C) 2005  Hans Melis
 
 This program is free software; you can redistribute it and/or modify
