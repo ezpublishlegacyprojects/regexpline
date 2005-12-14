@@ -27,9 +27,11 @@
 
 */
 
-include_once( "kernel/classes/ezdatatype.php" );
+include_once( 'kernel/classes/ezdatatype.php' );
 
-define( 'EZ_DATATYPESTRING_REGEXPLINE', "hmregexpline" );
+include_once( 'kernel/common/i18n.php' );
+
+define( 'EZ_DATATYPESTRING_REGEXPLINE', 'hmregexpline' );
 
 class hmregexplinetype extends eZDataType
 {
@@ -38,7 +40,8 @@ class hmregexplinetype extends eZDataType
     */
     function hmregexplinetype()
     {
-        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE, "Regular Expression Text" );
+        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE, "Regular Expression Text",
+                           array( 'serialize_supported' => true ) );
     }
 
     /*!
@@ -349,6 +352,21 @@ class hmregexplinetype extends eZDataType
     {
         return 'string';
     }
+
+    function serializeContentClassAttribute( &$classAttribute, &$attributeNode, &$attributeParametersNode )
+    {
+        $serializedContent = $classAttribute->attribute( 'data_text5' );
+
+        $attributeParametersNode->appendChild( eZDOMDocument::createElementCDATANode( 'content', $serializedContent ) );
+    }
+
+    function unserializeContentClassAttribute( &$classAttribute, &$attributeNode, &$attributeParametersNode )
+    {
+        $serializedContent = $attributeParametersNode->elementTextContentByName( 'content' );
+        
+        $classAttribute->setAttribute( 'data_text5', $serializedContent );
+    }
+    
 
     function getRegularExpression( &$classContent )
     {

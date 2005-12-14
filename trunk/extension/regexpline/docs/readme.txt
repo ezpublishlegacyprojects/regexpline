@@ -22,13 +22,13 @@ Features
 - Information collection support
 - Attribute filtering support
 - Ability to define preset regular expressions in an ini file
+- Contentclass import & export
 
 
 Planned Features
 ----------------
 These features are NOT available yet, but they're coming.
 
-- Contentclass import & export
 (- Support for multiple regular expressions)*
 (- i18n support)*
 
