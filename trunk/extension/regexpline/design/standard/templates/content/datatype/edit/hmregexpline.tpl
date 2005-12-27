@@ -1,13 +1,13 @@
-{let class_content=$attribute.class_content}
+{def $class_content=$attribute.class_content}
 
-{section show=$class_content.help_text|ne("")}
+{if $class_content.help_text|ne("")}
     <fieldset class="small">
-        <legend>Help text</legend>
+        <legend>{'Help text'|i18n( 'extension/regexpline/design/standard/content/datatype/edit' )}</legend>
         <p>{$class_content.help_text|wash|nl2br}</p>
     </fieldset>
     <br />
-{/section}
+{/if}
 
 <input class="box" type="text" size="70" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}" value="{$attribute.content|wash}" />
 
-{/let}
+{undef $class_content}

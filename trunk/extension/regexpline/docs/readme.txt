@@ -23,6 +23,7 @@ Features
 - Attribute filtering support
 - Ability to define preset regular expressions in an ini file
 - Contentclass import & export
+- i18n support
 
 
 Planned Features
@@ -30,14 +31,13 @@ Planned Features
 These features are NOT available yet, but they're coming.
 
 (- Support for multiple regular expressions)*
-(- i18n support)*
 
 *: If needed
 
 
 Requirements
 ------------
-- A suitable eZ publish version: 3.6.x; 3.7.x might also work but is untested.
+- A suitable eZ publish version: 3.6.x; 3.7.x has also been used during development.
 - Knowledge of Perl Compatible Regular Expression syntax (http://www.php.net/manual/en/ref.pcre.php)
 
 
@@ -70,6 +70,13 @@ Bugs? Comments? Wishes?
 Direct all (fan|bug|wish)mail at: hans <dotty> melis <atty> gmail <dotty> com
 
 Please note that this datatype has been developed in my spare time, and is supplied as is. I'm not responsible for any data loss or failures. YMMV!
+
+
+Changelog
+---------
+* 1.0
+  - Initial release
+  - Release date: 27 December 2005
 
 
 Copyright

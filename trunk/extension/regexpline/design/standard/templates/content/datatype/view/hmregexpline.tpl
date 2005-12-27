@@ -1,3 +1,3 @@
-{let content=$attribute.content}
+{def $content=$attribute.content}
 <p>{$content|wash}</p>
-{/let}
+{undef $content}

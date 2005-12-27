@@ -40,7 +40,7 @@ class hmregexplinetype extends eZDataType
     */
     function hmregexplinetype()
     {
-        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE, "Regular Expression Text",
+        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE, ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
                            array( 'serialize_supported' => true ) );
     }
 
@@ -244,14 +244,14 @@ class hmregexplinetype extends eZDataType
 
             if( empty( $text ) and ( $required === true && $must_validate === true ) )
             {
-                $objectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
+                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field which means you can\'t leave it empty' ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
             
         if( !empty( $text ) and @preg_match( $this->getRegularExpression( $classContent ), $text ) === 0 )
             {
                 // No match
-                $objectAttribute->setValidationError( 'Your input did not meet the requirements.' );
+                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
         }
@@ -259,7 +259,7 @@ class hmregexplinetype extends eZDataType
         {
             if( $required === true && $must_validate === true )
             {
-                $objectAttribute->setValidationError( 'This is a required field which means you can\'t leave it empty' );
+                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field which means you can\'t leave it empty' ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
         }
