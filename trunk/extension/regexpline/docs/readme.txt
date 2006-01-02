@@ -72,13 +72,6 @@ Direct all (fan|bug|wish)mail at: hans <dotty> melis <atty> gmail <dotty> com
 Please note that this datatype has been developed in my spare time, and is supplied as is. I'm not responsible for any data loss or failures. YMMV!
 
 
-Changelog
----------
-* 1.0
-  - Initial release
-  - Release date: 27 December 2005
-
-
 Copyright
 ---------
 
