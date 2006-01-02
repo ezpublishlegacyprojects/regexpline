@@ -40,7 +40,8 @@ class hmregexplinetype extends eZDataType
     */
     function hmregexplinetype()
     {
-        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE, ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
+        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE,
+                           ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
                            array( 'serialize_supported' => true ) );
     }
 
@@ -73,7 +74,7 @@ class hmregexplinetype extends eZDataType
 
             if( isset( $presets[$preset] ) )
             {
-            $regexp = $presets[$preset];
+                $regexp = $presets[$preset];
             }
         }        
 
@@ -248,7 +249,7 @@ class hmregexplinetype extends eZDataType
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
             
-        if( !empty( $text ) and @preg_match( $this->getRegularExpression( $classContent ), $text ) === 0 )
+            if( !empty( $text ) and @preg_match( $this->getRegularExpression( $classContent ), $text ) === 0 )
             {
                 // No match
                 $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' ) );
