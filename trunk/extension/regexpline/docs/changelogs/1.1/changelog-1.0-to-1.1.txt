@@ -1,4 +1,5 @@
 General
 *******
 - Fixed: CS issues
+- Fixed: Only use internal function to fetch the regular expression
 

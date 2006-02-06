@@ -67,17 +67,10 @@ class hmregexplinetype extends eZDataType
             $preset = $http->postVariable( $presetName );
         }
         
-        if( !empty( $preset ) )
-        {
-            $ini =& eZINI::instance( 'regexpline.ini' );
-            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
-
-            if( isset( $presets[$preset] ) )
-            {
-                $regexp = $presets[$preset];
-            }
-        }        
-
+        $content = array( 'regexp' => $regexp,
+                          'preset' => $preset );
+        $regexp = $this->getRegularExpression( $content );
+        
         $check = @preg_match( $regexp, 'Dummy string' );
             
         if( $check === false )
@@ -125,21 +118,7 @@ class hmregexplinetype extends eZDataType
             $content['pattern_selection'] = array();
         }
 
-        $regexp = $content['regexp'];
-
-        if( !empty( $content['preset'] ) )
-        {
-            $ini =& eZINI::instance( 'regexpline.ini' );
-            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
-
-            if( isset( $presets[$content['preset']] ) )
-            {
-                $regexp = $presets[$content['preset']];
-
-                // Clear the regular expression in the content
-                $content['regexp'] = '';
-            }
-        }
+        $regexp = $this->getRegularExpression( $content );
     
         $subPatternCount = @preg_match_all( "/\((?!\?\:)/", $regexp, $matches );
         
