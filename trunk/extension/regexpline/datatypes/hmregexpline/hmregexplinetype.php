@@ -298,7 +298,7 @@ class hmregexplinetype extends eZDataType
 
         $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
         
-        if( $res !== false && $content['naming_pattern'] != '' )
+        if( $res !== false && $classContent['naming_pattern'] != '' )
         {
             $index = preg_replace( "/<([0-9]+)>/e", "\$matches[\\1]", $classContent['naming_pattern'] );
         }
