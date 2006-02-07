@@ -24,25 +24,36 @@
 </div>
 
 <div class="block">
-    <div class="element">
-        <label>{'Help text for users'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</label>
-        <textarea name="ContentClass_hmregexpline_helptext_{$class_attribute.id}" rows="5" cols="80">{$content.help_text|wash}</textarea>
-    </div>
-    
-    <div class="element">
-        <label>{'Object name pattern selection'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</label>
+    <div class="block">
+        <label>{'Object name pattern'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</label>
         {if $content.subpattern_count|gt(0)}
-            <select name="ContentClass_hmregexpline_patternselect_{$class_attribute.id}[]" multiple="multiple">
-            {section var=sub loop=$content.subpattern_count}
-                <option value="{$sub}" {section show=$content.pattern_selection|contains($sub)}selected="selected"{/section}>{$sub}</option>
-            {/section}
-            </select>
+            <input type="text" name="ContentClass_hmregexpline_namepattern_{$class_attribute.id}" size="100" value="{$content.naming_pattern|wash}" />
+            <p>
+                {'This field allows you to structure the object naming pattern for this attribute. To use a subpattern of your regular expression, place its number (visible in the list below) in a tag-like notation, e.g. &lt;1&gt; to use the first subpattern.'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}
+            </p>
         {else}
             <p><i>{'No subpatterns defined. Using the complete expression.'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</i></p>
         {/if}
     </div>
-    
-    <div class="break"></div>
+
+    <div class="block">
+        {if $content.subpattern_count|gt(0)}
+        <p>{'These are the available subpatterns:'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}
+            <ol>
+                {foreach $content.subpatterns as $pattern}
+                <li>{$pattern|wash}</li>
+                {/foreach}
+            </ol>
+        </p>
+        {else}
+        <p>{'No subpatters defined.'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</p>
+        {/if}
+    </div>
+</div>
+
+<div class="block">
+    <label>{'Help text for users'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</label>
+    <textarea name="ContentClass_hmregexpline_helptext_{$class_attribute.id}" rows="5" cols="80">{$content.help_text|wash}</textarea>
 </div>
 
 {undef $content $presets}

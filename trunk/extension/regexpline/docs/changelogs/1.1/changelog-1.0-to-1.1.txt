@@ -3,3 +3,8 @@ General
 - Fixed: CS issues
 - Fixed: Only use internal function to fetch the regular expression
 
+
+Features
+********
+- Added: Custom name pattern similar to the object name pattern of a contentclass
+

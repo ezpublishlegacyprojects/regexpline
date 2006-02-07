@@ -89,7 +89,7 @@ class hmregexplinetype extends eZDataType
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $helpName = $base . "_hmregexpline_helptext_" . $classAttribute->attribute( 'id' );
-        $patternName = $base . "_hmregexpline_patternselect_" . $classAttribute->attribute( 'id' );
+        $patternName = $base . "_hmregexpline_namepattern_" . $classAttribute->attribute( 'id' );
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' ); 
 
         $content = $classAttribute->content();
@@ -108,21 +108,22 @@ class hmregexplinetype extends eZDataType
         {
             $content['help_text'] = $http->postVariable( $helpName );
         }
-        
+
         if( $http->hasPostVariable( $patternName ) )
         {
-            $content['pattern_selection'] = $http->postVariable( $patternName );
+            $content['naming_pattern'] = $http->postVariable( $patternName );
         }
         else if( $http->hasPostVariable( 'ContentClassHasInput' ) )
         {
-            $content['pattern_selection'] = array();
+            $content['naming_pattern'] = '';
         }
 
         $regexp = $this->getRegularExpression( $content );
     
-        $subPatternCount = @preg_match_all( "/\((?!\?\:)/", $regexp, $matches );
+        $subPatternCount = @preg_match_all( "/\((?!\?\:)(.*)\)/U", $regexp, $matches, PREG_PATTERN_ORDER );
         
         $content['subpattern_count'] = $subPatternCount == false ? 0 : $subPatternCount;
+        $content['subpatterns'] = $matches[1];
         
         $classAttribute->setContent( $content );
         $classAttribute->store();
@@ -147,7 +148,12 @@ class hmregexplinetype extends eZDataType
                               'preset' => '',
                               'help_text' => '',
                               'subpattern_count' => 0,
-                              'pattern_selection' => array() );
+                              'subpatterns' => array(),
+                              'naming_pattern' => '' );
+        }
+        else if( isset( $content['pattern_selection'] ) )
+        {
+            $this->migratePatternSelection( $content );
         }
         
         return $content;
@@ -284,21 +290,17 @@ class hmregexplinetype extends eZDataType
         $classContent = $classAttribute->content();
         $content = $contentObjectAttribute->content();
         $index = "";
-
-        if( is_array( $classContent['pattern_selection'] ) and count( $classContent['pattern_selection'] ) > 0 )
+        
+        if( isset( $classContent['pattern_selection'] ) )
         {
-            $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
+            $this->migratePatternSelection( $classContent );
+        }
 
-            if( $res !== false )
-            {
-                foreach( $classContent['pattern_selection'] as $patternIndex )
-                {
-                    if( isset( $matches[$patternIndex] ) )
-                    {
-                        $index .= $matches[$patternIndex];
-                    }
-                }
-            }
+        $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
+        
+        if( $res !== false && $content['naming_pattern'] != '' )
+        {
+            $index = preg_replace( "/<([0-9]+)>/e", "\$matches[\\1]", $classContent['naming_pattern'] );
         }
         else
         {
@@ -365,6 +367,19 @@ class hmregexplinetype extends eZDataType
         }
 
         return $regexp;
+    }
+    
+    function migratePatternSelection( &$classContent )
+    {
+        // Migrate the old pattern_selection to the newer naming_pattern
+        $content['naming_pattern'] = '';
+    
+        foreach( $content['pattern_selection'] as $pattern )
+        {
+            $content['naming_pattern'] .= "<$pattern>";
+        }
+
+        unset( $content['pattern_selection'] );   
     }
 }
 

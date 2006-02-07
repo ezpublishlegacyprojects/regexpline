@@ -34,11 +34,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Object name pattern selection</source>
+        <source>No subpatterns defined. Using the complete expression.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No subpatterns defined. Using the complete expression.</source>
+        <source>Object name pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This field allows you to structure the object naming pattern for this attribute. To use a subpattern of your regular expression, place its number (visible in the list below) in a tag-like notation, e.g. &amp;lt;1&amp;gt; to use the first subpattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are the available subpatterns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No subpatters defined.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -53,15 +65,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Object name pattern selection</source>
+        <source>Object name pattern</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Using subpatterns:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No subpatterns selected. Using the complete expression.</source>
+        <source>No pattern supplied. Using the complete expression.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

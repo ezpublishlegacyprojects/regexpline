@@ -17,11 +17,11 @@
     </div>
     
     <div class="element">
-        <label>{'Object name pattern selection'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}:</label>
-        {if count($content.pattern_selection)|gt(0)}
-            <p>{'Using subpatterns:'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )} {section var=selection loop=$content.pattern_selection}{$selection}{delimiter}, {/delimiter}{/section}
+        <label>{'Object name pattern'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}:</label>
+        {if $content.naming_pattern|ne('')}
+            <p>{$content.naming_pattern|wash}</p>
         {else}
-            <p>{'No subpatterns selected. Using the complete expression.'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</p> 
+            <p>{'No pattern supplied. Using the complete expression.'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</p> 
         {/if}
     </div>
     
