@@ -17,6 +17,7 @@ Features
 --------
 - Check user input against a regular expression (Perl-compatible)
 - Use regular expression subpatterns to be able to use parts of the input in the object name pattern
+- Ability to customise the text that will be used in the object name pattern
 - Ability to supply a helptext for users
 - Required checks compatible with newer eZ publish versions (drafts ignore required fields)
 - Information collection support
@@ -30,9 +31,7 @@ Planned Features
 ----------------
 These features are NOT available yet, but they're coming.
 
-(- Support for multiple regular expressions)*
-
-*: If needed
+No planned features at the time of writing
 
 
 Requirements
@@ -70,6 +69,11 @@ Bugs? Comments? Wishes?
 Direct all (fan|bug|wish)mail at: hans <dotty> melis <atty> gmail <dotty> com
 
 Please note that this datatype has been developed in my spare time, and is supplied as is. I'm not responsible for any data loss or failures. YMMV!
+
+
+Tips & Tricks
+-------------
+1. If you want to refer to the complete text that matched the regular expression in the object name pattern, you can use <0> as tag.
 
 
 Copyright
