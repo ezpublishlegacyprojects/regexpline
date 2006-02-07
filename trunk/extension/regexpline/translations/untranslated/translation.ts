@@ -49,10 +49,6 @@
         <source>These are the available subpatterns:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>No subpatters defined.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>extension/regexpline/design/standard/class/datatype/view</name>

@@ -45,8 +45,6 @@
                 {/foreach}
             </ol>
         </p>
-        {else}
-        <p>{'No subpatters defined.'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</p>
         {/if}
     </div>
 </div>
