@@ -291,20 +291,23 @@ class hmregexplinetype extends eZDataType
         $content = $contentObjectAttribute->content();
         $index = "";
         
+        // Exit if the input is empty
+        if( $content == '' )
+        {
+            return $content;
+        }
+        
         if( isset( $classContent['pattern_selection'] ) )
         {
             $this->migratePatternSelection( $classContent );
         }
 
         $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
-        
-        if( $res !== false && $classContent['naming_pattern'] != '' )
+
+        // Only replace if there's at least a match
+        if( $res > 0 && $classContent['naming_pattern'] != '' )
         {
             $index = preg_replace( "/<([0-9]+)>/e", "\$matches[\\1]", $classContent['naming_pattern'] );
-        }
-        else
-        {
-            $index = $content;
         }
 
         return $index;
