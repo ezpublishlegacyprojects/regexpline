@@ -19,8 +19,8 @@
   \class   hmregexplinetype hmregexplinetype.php
   \ingroup eZDatatype
   \brief   Handles the datatype regexpline
-  \version 1.0
-  \date    Thursday 17 March 2005 2:22:55 pm
+  \version 1.1
+  \date    Thursday 26 February 2004 12:58:55 pm
   \author  Hans Melis
 
   By using regexpline you can ... do stuff :)
