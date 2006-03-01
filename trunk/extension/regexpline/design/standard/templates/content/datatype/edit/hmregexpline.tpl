@@ -8,6 +8,16 @@
     <br />
 {/if}
 
+{switch match=$class_content.display_type}
+{case match="area"}
+<textarea cols="80" rows="10" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}">
+{$attribute.content|wash}
+</textarea>
+{/case}
+
+{case}
 <input class="box" type="text" size="70" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}" value="{$attribute.content|wash}" />
+{/case}
+{/switch}
 
 {undef $class_content}

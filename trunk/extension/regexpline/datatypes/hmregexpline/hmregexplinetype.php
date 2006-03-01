@@ -55,7 +55,7 @@ class hmregexplinetype extends eZDataType
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
         
-        $regexp = $preset = '';
+        $regexp = $preset = array();
 
         if( $http->hasPostVariable( $regexpName ) )
         {
@@ -71,11 +71,14 @@ class hmregexplinetype extends eZDataType
                           'preset' => $preset );
         $regexp = $this->getRegularExpression( $content );
         
-        $check = @preg_match( $regexp, 'Dummy string' );
-            
-        if( $check === false )
+        foreach( $regexp as $expr )
         {
-            return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            $check = @preg_match( $expr, 'Dummy string' );
+            
+            if( $check === false )
+            {
+                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            }
         }
 
         return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
@@ -88,9 +91,11 @@ class hmregexplinetype extends eZDataType
     function fetchClassAttributeHTTPInput( &$http, $base, &$classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
+        $errorsName = $base . "_hmregexpline_errmsg_" . $classAttribute->attribute( 'id' );
         $helpName = $base . "_hmregexpline_helptext_" . $classAttribute->attribute( 'id' );
         $patternName = $base . "_hmregexpline_namepattern_" . $classAttribute->attribute( 'id' );
-        $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' ); 
+        $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
+        $displayName = $base . "_hmregexpline_display_"  . $classAttribute->attribute( 'id' );
 
         $content = $classAttribute->content();
 
@@ -98,10 +103,19 @@ class hmregexplinetype extends eZDataType
         {
             $content['regexp'] = $http->postVariable( $regexpName );
         }
+        
+        if( $http->hasPostVariable( $errorsName ) )
+        {
+            $content['error_messages'] = $http->postVariable( $errorsName );
+        }
 
         if( $http->hasPostVariable( $presetName ) )
         {
             $content['preset'] = $http->postVariable( $presetName );
+        }
+        else if( $http->hasPostVariable( 'ContentClassHasInput' ) )
+        {
+            $content['preset'] = array();
         }
         
         if( $http->hasPostVariable( $helpName ) )
@@ -117,13 +131,30 @@ class hmregexplinetype extends eZDataType
         {
             $content['naming_pattern'] = '';
         }
+        
+        if( $http->hasPostVariable( $displayName ) )
+        {
+            $content['display_type'] = $http->postVariable( $displayName );
+        }
+        else if( $http->hasPostVariable( 'ContentClassHasInput' ) )
+        {
+            $content['display_type'] = 'line'; // default
+        }
 
         $regexp = $this->getRegularExpression( $content );
+        $subPatternCount = 0;
+        $subPatterns = array();
     
-        $subPatternCount = @preg_match_all( "/\((?!\?\:)(.*)\)/U", $regexp, $matches, PREG_PATTERN_ORDER );
+        foreach( $regexp as $expr )
+        {        
+            $subPatternCount += @preg_match_all( "/\((?!\?\:)(.*)\)/U", $expr, $matches, PREG_PATTERN_ORDER );
+            $subPatterns = array_merge( $subPatterns, $matches[1] );
+        }
         
         $content['subpattern_count'] = $subPatternCount == false ? 0 : $subPatternCount;
-        $content['subpatterns'] = $matches[1];
+        $content['subpatterns'] = $subPatterns;
+        
+        eZDebug::writeNotice( $content );
         
         $classAttribute->setContent( $content );
         $classAttribute->store();
@@ -144,16 +175,46 @@ class hmregexplinetype extends eZDataType
         
         if( !is_array( $content ) )
         {
-            $content = array( 'regexp' => '',
-                              'preset' => '',
+            $content = array( 'regexp' => array(),
+                              'error_messages' => array(),
+                              'preset' => array(),
                               'help_text' => '',
                               'subpattern_count' => 0,
                               'subpatterns' => array(),
-                              'naming_pattern' => '' );
+                              'naming_pattern' => '',
+                              'display_type' => 'line' );
         }
-        else if( isset( $content['pattern_selection'] ) )
+        
+        if( isset( $content['pattern_selection'] ) )
         {
             $this->migratePatternSelection( $content );
+        }
+        
+        if( !is_array( $content['regexp'] ) )
+        {
+            $content['regexp'] = array( $content['regexp'] );
+        }
+        
+        if( !is_array( $content['preset'] ) )
+        {
+            $tmpPreset = array();
+            
+            if( !empty( $content['preset'] ) )
+            {
+                $tmpPreset[] = $content['preset'];
+            }
+            
+            $content['preset'] = $tmpPreset;
+        }
+        
+        if( !isset( $content['display_type'] ) )
+        {
+            $content['display_type'] = 'line';
+        }
+        
+        if( !isset( $content['error_messages'] ) )
+        {
+            $content['error_messages'] = array();
         }
         
         return $content;
@@ -234,11 +295,28 @@ class hmregexplinetype extends eZDataType
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
             
-            if( !empty( $text ) and @preg_match( $this->getRegularExpression( $classContent ), $text ) === 0 )
+            if( !empty( $text ) )
             {
-                // No match
-                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' ) );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                $regexp = $this->getRegularExpression( $classContent );
+                
+                foreach( $regexp as $index => $expr )
+                {
+                    $res = @preg_match( $expr, $text );
+                    
+                    if( $res === 0 )
+                    {
+                        // No match
+                        $msg = $this->getErrorMessage( $classContent, $index );
+                        
+                        if( $msg === null )
+                        {
+                            $msg = ezi18n( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' );
+                        }
+                        
+                        $objectAttribute->setValidationError( $msg );
+                        return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                    }
+                }
             }
         }
         else
@@ -289,7 +367,7 @@ class hmregexplinetype extends eZDataType
         $classAttribute =& $contentObjectAttribute->contentClassAttribute();
         $classContent = $classAttribute->content();
         $content = $contentObjectAttribute->content();
-        $index = "";
+        $title = "";
         
         // Exit if the input is empty
         if( $content == '' )
@@ -302,15 +380,25 @@ class hmregexplinetype extends eZDataType
             $this->migratePatternSelection( $classContent );
         }
 
-        $res = @preg_match( $this->getRegularExpression( $classContent ), $content, $matches );
-
-        // Only replace if there's at least a match
-        if( $res > 0 && $classContent['naming_pattern'] != '' )
-        {
-            $index = preg_replace( "/<([0-9]+)>/e", "\$matches[\\1]", $classContent['naming_pattern'] );
+        $regexp = $this->getRegularExpression( $classContent );
+        $res = 0;
+        $matchArray = array( $content );
+        
+        foreach( $regexp as $index => $expr )
+        {        
+            $res += @preg_match( $expr, $content, $matches );
+            unset( $matches[0] ); // We don't need this one
+            $matchArray = array_merge( $matchArray, $matches );
         }
 
-        return $index;
+        // Only replace if there's at least a match
+        if( (count( $matchArray ) - 1) == $classContent['subpattern_count'] &&
+            $classContent['naming_pattern'] != '' )
+        {
+            $title = preg_replace( "/<([0-9]+)>/e", "\$matchArray[\\1]", $classContent['naming_pattern'] );
+        }
+
+        return $title;
     }
 
     /*!
@@ -356,20 +444,72 @@ class hmregexplinetype extends eZDataType
     function getRegularExpression( &$classContent )
     {
         $regexp = $classContent['regexp'];
-
-        if( !empty( $classContent['preset'] ) )
+        
+        if( !is_array( $classContent['preset'] ) )
         {
+            $tmpPreset = array();
+            
+            if( !empty( $classContent['preset'] ) )
+            {
+                $tmpPreset[] = $content['preset'];
+            }
+            
+            $classContent['preset'] = $tmpPreset;
+        }
+
+        if( count( $classContent['preset'] ) > 0 )
+        {
+            $tmpRegexp = array();
             $ini =& eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
-
-            if( isset( $presets[$classContent['preset']] ) )
+            
+            foreach( $classContent['preset'] as $preset )
             {
-                $regexp = $presets[$classContent['preset']];
+                if( isset( $presets[$preset] ) )
+                {
+                    $tmpRegexp[$preset] = $presets[$preset];
+                }
             }
+            
+            $regexp = $tmpRegexp;
+        }
         
+        if( !is_array( $regexp ) )
+        {
+            $regexp = array( $regexp );
         }
 
         return $regexp;
+    }
+    
+    function getErrorMessage( &$classContent, $index )
+    {
+        $msg = null;
+        
+        eZDebug::writeNotice( $index );
+        
+        if( isset( $classContent['error_messages'] ) && is_array( $classContent['error_messages'] ) )
+        {
+            if( isset( $classContent['error_messages'][$index] ) )
+            {
+                $msg = $classContent['error_messages'][$index];
+            }
+        }
+        
+        // Presets override
+        if( count( $classContent['preset'] ) > 0 )
+        {
+            $ini =& eZINI::instance( 'regexpline.ini' );
+            $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
+            $messages = $ini->variable( 'GeneralSettings', 'ErrorMessages' );
+            
+            if( isset( $presets[$index] ) && isset( $messages[$index] ) )
+            {
+                $msg = $messages[$index];
+            }
+        }
+        
+        return $msg;
     }
     
     function migratePatternSelection( &$classContent )
