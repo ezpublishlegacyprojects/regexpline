@@ -154,8 +154,6 @@ class hmregexplinetype extends eZDataType
         $content['subpattern_count'] = $subPatternCount == false ? 0 : $subPatternCount;
         $content['subpatterns'] = $subPatterns;
         
-        eZDebug::writeNotice( $content );
-        
         $classAttribute->setContent( $content );
         $classAttribute->store();
         
@@ -485,8 +483,6 @@ class hmregexplinetype extends eZDataType
     function getErrorMessage( &$classContent, $index )
     {
         $msg = null;
-        
-        eZDebug::writeNotice( $index );
         
         if( isset( $classContent['error_messages'] ) && is_array( $classContent['error_messages'] ) )
         {
