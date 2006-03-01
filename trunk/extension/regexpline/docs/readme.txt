@@ -15,14 +15,21 @@ It can act like a regular "Text line" datatype by allowing all input (regexp: /.
 
 Features
 --------
+A number between square brackets denotes the version number where said feature has been introduced.
+If no indication is present, version 1.0 contains the feature.
+
 - Check user input against a regular expression (Perl-compatible)
+- Ability to specify multiple regular expression [2.0]
 - Use regular expression subpatterns to be able to use parts of the input in the object name pattern
-- Ability to customise the text that will be used in the object name pattern
-- Ability to supply a helptext for users
+- Ability to customise the text that will be used in the object name pattern [1.1]
+- Ability to supply a help text for users
 - Required checks compatible with newer eZ publish versions (drafts ignore required fields)
 - Information collection support
 - Attribute filtering support
 - Ability to define preset regular expressions in an ini file
+- Ability to select multiple presets [2.0]
+- Ability to specify an error message per regular expression / preset [2.0]
+- Ability to display the datatype as a single text line or as a textarea (object edit) [2.0]
 - Contentclass import & export
 - i18n support
 
