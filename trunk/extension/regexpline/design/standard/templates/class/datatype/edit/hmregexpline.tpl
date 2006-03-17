@@ -110,6 +110,34 @@ function removeLines{/literal}{$class_attribute.id}{literal}()
 </div>
 
 <div class="block">
+    <table class="list" cellspacing="0" style="width: 50%;">
+    <tr>
+        <th>Regexp / Preset</th>
+        <th>Negate</th>
+    </tr>
+    {if $hasPresets}
+        {foreach $content.preset as $preset}
+        <tr>
+            <td width="1%">{$preset|wash}</td>
+            <td width="1%">
+                <input type="checkbox" name="ContentClass_hmregexpline_negate_{$class_attribute.id}[{$preset|wash}]" {if is_set( $content.negates[$preset|wash] )}checked="checked"{/if} />
+            </td>
+        </tr>
+        {/foreach}
+    {else}
+        {foreach $content.regexp as $index => $regexp}
+        <tr>
+            <td width="1%">{$regexp|wash}</td>
+            <td width="1%">
+                <input type="checkbox" name="ContentClass_hmregexpline_negate_{$class_attribute.id}[]" {if is_set( $content.negates[$index] )}checked="checked"{/if} />
+            </td>
+        </tr>
+        {/foreach}
+    {/if}
+    </table>
+</div>
+
+<div class="block">
     <div class="block">
         <label>{'Object name pattern'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</label>
         {if $content.subpattern_count|gt(0)}

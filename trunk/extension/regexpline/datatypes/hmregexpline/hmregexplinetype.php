@@ -96,6 +96,7 @@ class hmregexplinetype extends eZDataType
         $patternName = $base . "_hmregexpline_namepattern_" . $classAttribute->attribute( 'id' );
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
         $displayName = $base . "_hmregexpline_display_"  . $classAttribute->attribute( 'id' );
+        $negateName = $base . "_hmregexpline_negate_" . $classAttribute->attribute( 'id' );
 
         $content = $classAttribute->content();
 
@@ -140,6 +141,21 @@ class hmregexplinetype extends eZDataType
         {
             $content['display_type'] = 'line'; // default
         }
+        
+        if( $http->hasPostVariable( $negateName ) )
+        {
+            $negates = $http->postVariable( $negateName );
+            $content['negates'] = array();
+            
+            foreach( $negates as $key => $value )
+            {
+                $content['negates'][$key] = true;
+            }
+        }
+        else if( $http->hasPostVariable( 'ContentClassHasInput' ) )
+        {
+            $content['negates'] = array();
+        }
 
         $regexp = $this->getRegularExpression( $content );
         $subPatternCount = 0;
@@ -175,6 +191,7 @@ class hmregexplinetype extends eZDataType
         {
             $content = array( 'regexp' => array(),
                               'error_messages' => array(),
+                              'negates' => array(),
                               'preset' => array(),
                               'help_text' => '',
                               'subpattern_count' => 0,
@@ -213,6 +230,11 @@ class hmregexplinetype extends eZDataType
         if( !isset( $content['error_messages'] ) )
         {
             $content['error_messages'] = array();
+        }
+        
+        if( !isset( $content['negates'] ) )
+        {
+            $content['negates'] = array();
         }
         
         return $content;
@@ -264,6 +286,14 @@ class hmregexplinetype extends eZDataType
         
         return $text;
     }
+    
+    function hasObjectAttributeContent( &$contentObjectAttribute )
+    {
+        $text = $contentObjectAttribute->attribute( 'data_text' );
+        $result = !empty( $text );
+        
+        return $result;
+    }
 
     function validateAttributeHTTPInput( &$http, $base, &$objectAttribute, $isInformationCollector = false )
     {
@@ -299,9 +329,19 @@ class hmregexplinetype extends eZDataType
                 
                 foreach( $regexp as $index => $expr )
                 {
+                    $doNegate = isset( $classContent['negates'][$index] );
                     $res = @preg_match( $expr, $text );
                     
-                    if( $res === 0 )
+                    if( $doNegate === false )
+                    {
+                        $condition = ( $res === 0 );
+                    }
+                    else
+                    {
+                        $condition = ( $res === 1 );
+                    }
+                    
+                    if( $condition )
                     {
                         // No match
                         $msg = $this->getErrorMessage( $classContent, $index );
@@ -390,12 +430,18 @@ class hmregexplinetype extends eZDataType
         }
 
         // Only replace if there's at least a match
-        if( (count( $matchArray ) - 1) == $classContent['subpattern_count'] &&
-            $classContent['naming_pattern'] != '' )
+        if( (count( $matchArray ) - 1) == $classContent['subpattern_count'] )
         {
-            $title = preg_replace( "/<([0-9]+)>/e", "\$matchArray[\\1]", $classContent['naming_pattern'] );
+            if( $classContent['naming_pattern'] != '' )
+            {
+                $title = preg_replace( "/<([0-9]+)>/e", "\$matchArray[\\1]", $classContent['naming_pattern'] );
+            }
+            else
+            {
+                $title = $matchArray[0];
+            }
         }
-
+eZDebug::writeNotice( array('title' =>$title,'matches'=>$matchArray) );
         return $title;
     }
 
@@ -498,10 +544,16 @@ class hmregexplinetype extends eZDataType
             $ini =& eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
             $messages = $ini->variable( 'GeneralSettings', 'ErrorMessages' );
+            $msgIndex = $index;
             
-            if( isset( $presets[$index] ) && isset( $messages[$index] ) )
+            if( isset( $classContent['negates'][$index] ) )
             {
-                $msg = $messages[$index];
+                $msgIndex .= '_negate';
+            }
+            
+            if( isset( $presets[$index] ) && isset( $messages[$msgIndex] ) )
+            {
+                $msg = $messages[$msgIndex];
             }
         }
         
