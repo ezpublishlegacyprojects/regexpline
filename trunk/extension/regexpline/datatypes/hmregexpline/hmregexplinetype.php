@@ -441,7 +441,7 @@ class hmregexplinetype extends eZDataType
                 $title = $matchArray[0];
             }
         }
-eZDebug::writeNotice( array('title' =>$title,'matches'=>$matchArray) );
+
         return $title;
     }
 
