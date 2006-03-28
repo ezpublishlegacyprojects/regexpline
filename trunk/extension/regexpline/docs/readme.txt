@@ -30,8 +30,36 @@ If no indication is present, version 1.0 contains the feature.
 - Ability to select multiple presets [2.0]
 - Ability to specify an error message per regular expression / preset [2.0]
 - Ability to display the datatype as a single text line or as a textarea (object edit) [2.0]
+- Ability to negate regular expressions and presets [2.1]
+- Support for has_content in templates [2.1]
 - Contentclass import & export
 - i18n support
+
+
+Information
+-----------
+While editing a contentclass, you will be able to define how the content of a regexpline attribute will be validated.
+
+You can choose two paths:
+  1. Enter regular expressions directly in the class.
+  2. Select one or more presets which have been defined in an INI file.
+
+Path 1 is pretty straightforward. The interface will tell you what you can do. Each regular expression you enter can
+have an error message that describes what should be done to meet the criteria. If you specify multiple regular expressions,
+the input must match all three expressions.
+
+Path 2 reads the settings from an INI file. You can define as many regular expressions provided you give each of them a
+unique identifier. With that very same identifier, you can build and array of error messages too. This way, you can accomplish
+the same thing as in Path 1 (custom messages per regular expression).
+
+Something specific for Path 2 is if the regular expression is negated afterwards (input must NOT match the expression). The datatype
+will then look for the error message identifier by the regular expression's unique identifier concatenated with '_negate'. This is of
+course not needed if you take Path 1 (the regular expression will always be negated for that attribute and the error message can be
+constructed to reflect that).
+
+Any subpatterns in the regular expressions chosen for an attribute will be available for use in the object name pattern. The datatype
+allows you to construct a custom string of these subpatterns. The custom string will then be used in real object name pattern if you
+construct the contentclass to do so.
 
 
 Planned Features
