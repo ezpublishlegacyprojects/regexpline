@@ -5,9 +5,7 @@
 
 {switch match=$class_content.display_type}
 {case match="area"}
-<textarea cols="80" rows="10" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}">
-{$data_text|wash}
-</textarea>
+<textarea cols="80" rows="10" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}">{$data_text|wash}</textarea>
 {/case}
 
 {case}

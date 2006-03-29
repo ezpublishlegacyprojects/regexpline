@@ -112,8 +112,8 @@ function removeLines{/literal}{$class_attribute.id}{literal}()
 <div class="block">
     <table class="list" cellspacing="0" style="width: 50%;">
     <tr>
-        <th>Regexp / Preset</th>
-        <th>Negate</th>
+        <th>{'Regexp / Preset'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</th>
+        <th>{'Negate'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</th>
     </tr>
     {if $hasPresets}
         {foreach $content.preset as $preset}
