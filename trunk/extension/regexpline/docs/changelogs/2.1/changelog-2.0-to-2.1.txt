@@ -1,6 +1,6 @@
 General
 *******
-- Release date: TBD
+- Release date: 30 March 2006
 - Enhanced contentclass view template
 
 
