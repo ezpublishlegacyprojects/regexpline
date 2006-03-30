@@ -3,19 +3,36 @@
 
 <div class="block">
     <div class="element">
-        <label>{'Regular expression'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}:</label>
         {if count($content.preset)|gt(0)}
-            <ul>
+            <table class="list">
+            <tr>
+                <th>{'Identifier'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+                <th>{'Regular expression'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+                <th>{'Negated'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+            </tr>
                 {foreach $content.preset as $preset}
-                    <li>{$presets[$preset]|wash}</li>
+                <tr>
+                    <td>{$preset|wash}</td>
+                    <td>{$presets[$preset]|wash}</td>
+                    <td>{cond( first_set( $content.negates[$preset|wash], 0 ), 'Yes', 'No' )}</td>
+                </tr>
                 {/foreach}
-            </ul>
+            </table>
         {else}
-            <ul>
-                {foreach $content.regexp as $regexp}
-                <li>{$regexp|wash}</li>
+            <table class="list">
+            <tr>
+                <th>{'Regular expression'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+                <th>{'Error message'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+                <th>{'Negated'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</th>
+            </tr>
+                {foreach $content.regexp as $index => $regexp}
+                <tr>
+                    <td>{$regexp|wash}</td>
+                    <td>{first_set( $content.error_messages[$index]|wash, '&nbsp;' )}</td>
+                    <td>{cond( first_set( $content.negates[$index], 0 ), 'Yes', 'No' )}</td>
+                </tr>
                 {/foreach}
-            </ul>
+            </table>
         {/if}
     </div>    
 </div>

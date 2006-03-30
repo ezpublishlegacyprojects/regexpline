@@ -1,6 +1,7 @@
 General
 *******
 - Release date: TBD
+- Enhanced contentclass view template
 
 
 Fixes

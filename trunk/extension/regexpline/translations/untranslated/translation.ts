@@ -77,6 +77,14 @@
         <source>Text area (Text block)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Regexp / Preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negate</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/regexpline/design/standard/class/datatype/view</name>
@@ -98,6 +106,18 @@
     </message>
     <message>
         <source>Display type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error message</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
