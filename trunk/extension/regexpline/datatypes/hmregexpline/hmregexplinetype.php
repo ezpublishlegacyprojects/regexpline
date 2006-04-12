@@ -29,6 +29,8 @@
 
 include_once( 'kernel/classes/ezdatatype.php' );
 
+include_once( 'lib/ezutils/classes/ezini.php' );
+
 include_once( 'kernel/common/i18n.php' );
 
 define( 'EZ_DATATYPESTRING_REGEXPLINE', 'hmregexpline' );
@@ -43,6 +45,8 @@ class hmregexplinetype extends eZDataType
         $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE,
                            ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
                            array( 'serialize_supported' => true ) );
+                           
+        $this->KeepTags = null;
     }
 
     /*!
@@ -326,6 +330,7 @@ class hmregexplinetype extends eZDataType
             if( !empty( $text ) )
             {
                 $regexp = $this->getRegularExpression( $classContent );
+                $text = $this->stripTags( $objectAttribute, $text );
                 
                 foreach( $regexp as $index => $expr )
                 {
@@ -394,7 +399,11 @@ class hmregexplinetype extends eZDataType
     */
     function metaData( $contentObjectAttribute )
     {
-        return $contentObjectAttribute->attribute( 'data_text' );
+        $data = $contentObjectAttribute->attribute( 'data_text' );
+        
+        $data = $this->stripTags( $contentObjectAttribute, $data );
+        
+        return $data;
     }
 
     /*!
@@ -411,6 +420,10 @@ class hmregexplinetype extends eZDataType
         if( $content == '' )
         {
             return $content;
+        }
+        else
+        {
+            $content = $this->stripTags( $contentObjectAttribute, $content );
         }
         
         if( isset( $classContent['pattern_selection'] ) )
@@ -572,6 +585,56 @@ class hmregexplinetype extends eZDataType
 
         unset( $content['pattern_selection'] );   
     }
+    
+    function doStripTags( &$objectAttribute )
+    {
+        if( $this->KeepTags === null )
+        {
+            $regIni =& eZINI::instance( 'regexpline.ini' );
+                
+            if( $regIni->hasVariable( 'GeneralSettings', 'KeepTags' ) )
+            {
+                include_once( 'kernel/classes/ezcontentobjecttreenode.php' );
+                // Don't ask why they've put that function in there :-s
+            
+                $keepTags = $regIni->variable( 'GeneralSettings', 'KeepTags' );
+                $keepTagsResult = array();
+            
+                foreach( $keepTags as $identifier )
+                {
+                    $keepTagsResult[] = eZContentObjectTreeNode::classAttributeIDByIdentifier( $identifier );
+                }
+                
+                $this->KeepTags = $keepTagsResult;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        
+        $shouldStrip = true;
+        $classAttributeID =& $objectAttribute->attribute( 'contentclassattribute_id' );
+        
+        if( is_array( $this->KeepTags ) && in_array( $classAttributeID, $this->KeepTags ) )
+        {
+            $shouldStrip = false;
+        }
+    
+        return $shouldStrip;
+    }
+    
+    function stripTags( &$objectAttribute, $content )
+    {
+        if( $this->doStripTags( $objectAttribute ) === true )
+        {
+            $content = strip_tags( $content );
+        }
+        
+        return $content;
+    }
+    
+    var $KeepTags = null;
 }
 
 eZDataType::register( EZ_DATATYPESTRING_REGEXPLINE, "hmregexplinetype" );
