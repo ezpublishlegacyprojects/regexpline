@@ -1,0 +1,13 @@
+General
+*******
+- Release date: TBD
+
+
+Fixes
+*****
+- Fixed: Regular expressions are added to/removed from the first class attribute using this datatype
+# Thanks to Richard Tuin for reporting this issue
+
+
+Features
+********
