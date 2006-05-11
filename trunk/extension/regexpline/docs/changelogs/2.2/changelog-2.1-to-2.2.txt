@@ -12,3 +12,4 @@ Fixes
 Features
 ********
 - Added stripping of tags with possibility to disable the stripping via the ini file
+- Added possibility to control the size of both a text line and a text area in content/edit
