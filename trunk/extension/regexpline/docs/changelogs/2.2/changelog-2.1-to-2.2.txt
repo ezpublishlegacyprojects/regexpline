@@ -1,6 +1,6 @@
 General
 *******
-- Release date: TBD
+- Release date: 11 May 2006
 
 
 Fixes
