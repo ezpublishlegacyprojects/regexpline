@@ -32,6 +32,8 @@ If no indication is present, version 1.0 contains the feature.
 - Ability to display the datatype as a single text line or as a textarea (object edit) [2.0]
 - Ability to negate regular expressions and presets [2.1]
 - Support for has_content in templates [2.1]
+- Stripping of tags with possibility to disable the stripping via the ini file [2.2]
+- Control the size of both a text line and a text area in content/edit [2.2]
 - Contentclass import & export
 - i18n support
 
