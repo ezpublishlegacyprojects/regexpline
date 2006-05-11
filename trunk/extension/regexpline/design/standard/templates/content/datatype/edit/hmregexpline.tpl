@@ -14,11 +14,10 @@
 
 {switch match=$class_content.display_type}
 {case match="area"}
-<textarea cols="{$cols|wash}" rows="{$rows|wash}" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}">{$attribute.content|wash}</textarea>
+    <textarea cols="{$cols|wash}" rows="{$rows|wash}" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}">{$attribute.content|wash}</textarea>
 {/case}
-
 {case}
-<input type="text" size="{$size|wash}" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}" value="{$attribute.content|wash}" />
+    <input type="text" size="{$size|wash}" name="ContentObjectAttribute_hmregexpline_data_text_{$attribute.id}" value="{$attribute.content|wash}" />
 {/case}
 {/switch}
 

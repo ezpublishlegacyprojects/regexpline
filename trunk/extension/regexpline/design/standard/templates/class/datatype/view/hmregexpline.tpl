@@ -34,7 +34,7 @@
                 {/foreach}
             </table>
         {/if}
-    </div>    
+    </div>
 </div>
 
 <div class="block">
@@ -42,15 +42,15 @@
         <label>{'Help text'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}:</label>
         <p>{$content.help_text|wash|nl2br}</p>
     </div>
-    
+
     <div class="element">
         <label>{'Object name pattern'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}:</label>
         {if $content.naming_pattern|ne('')}
             <p>{$content.naming_pattern|wash}</p>
         {else}
-            <p>{'No pattern supplied. Using the complete expression.'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</p> 
+            <p>{'No pattern supplied. Using the complete expression.'|i18n( 'extension/regexpline/design/standard/class/datatype/view' )}</p>
         {/if}
-    </div>    
+    </div>
 </div>
 
 <div class="block">
@@ -64,7 +64,7 @@
         {'Single text line'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}
     {/case}
     {/switch}
-    </p> 
+    </p>
 </div>
 
 {undef $content $presets}
