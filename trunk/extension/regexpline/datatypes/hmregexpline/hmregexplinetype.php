@@ -323,7 +323,7 @@ class hmregexplinetype extends eZDataType
 
             if( empty( $text ) and ( $required === true && $must_validate === true ) )
             {
-                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field which means you can\'t leave it empty' ) );
+                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field.' ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
 
