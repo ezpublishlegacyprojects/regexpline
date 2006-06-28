@@ -7,11 +7,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This is a required field which means you can&apos;t leave it empty</source>
+        <source>Your input did not meet the requirements.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Your input did not meet the requirements.</source>
+        <source>This is a required field.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
