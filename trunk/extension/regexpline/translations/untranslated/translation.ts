@@ -14,6 +14,14 @@
         <source>This is a required field.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>You need at least one regular expression or selected preset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The regular expression &quot;%1&quot; is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>extension/regexpline/design/standard/class/datatype/edit</name>
@@ -83,6 +91,10 @@
     </message>
     <message>
         <source>Negate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following errors occured:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

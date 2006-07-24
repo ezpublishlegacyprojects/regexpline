@@ -60,6 +60,8 @@ class hmregexplinetype extends eZDataType
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
 
         $regexp = $preset = array();
+        
+        $this->clearClassErrorMessages( $classAttribute );
 
         if( $http->hasPostVariable( $regexpName ) )
         {
@@ -74,6 +76,13 @@ class hmregexplinetype extends eZDataType
         $content = array( 'regexp' => $regexp,
                           'preset' => $preset );
         $regexp = $this->getRegularExpression( $content );
+        
+        if( count( $regexp ) == 0 )
+        {
+            $this->addClassErrorMessage( $classAttribute,
+                ezi18n( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );        
+        	return EZ_INPUT_VALIDATOR_STATE_INVALID;
+        }
 
         foreach( $regexp as $expr )
         {
@@ -81,6 +90,8 @@ class hmregexplinetype extends eZDataType
 
             if( $check === false )
             {
+            	$this->addClassErrorMessage( $classAttribute,
+                    ezi18n( 'extension/regexpline/datatype', 'The regular expression "%1" is invalid', null, array( $expr ) ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
         }
@@ -509,7 +520,7 @@ class hmregexplinetype extends eZDataType
 
             if( !empty( $classContent['preset'] ) )
             {
-                $tmpPreset[] = $content['preset'];
+                $tmpPreset[] = $classContent['preset'];
             }
 
             $classContent['preset'] = $tmpPreset;
@@ -633,6 +644,26 @@ class hmregexplinetype extends eZDataType
         }
 
         return $content;
+    }
+    
+    function addClassErrorMessage( &$classAttribute, $message )
+    {
+    	$content =& $classAttribute->content();
+        
+        $content['class_validation_messages'][] = $message;
+        
+        $classAttribute->setContent( $content );
+        $classAttribute->store();
+    }
+    
+    function clearClassErrorMessages( &$classAttribute )
+    {
+    	$content =& $classAttribute->content();
+        
+        $content['class_validation_messages'] = array();
+        
+        $classAttribute->setContent( $content );
+        $classAttribute->store();
     }
 
     var $KeepTags = null;

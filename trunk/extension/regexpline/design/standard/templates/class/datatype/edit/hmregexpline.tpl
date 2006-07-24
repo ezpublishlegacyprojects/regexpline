@@ -75,6 +75,18 @@ function removeLines{/literal}{$class_attribute.id}{literal}()
 {/literal}
 </script>
 
+{if and( is_set( $content.class_validation_messages ),
+		 count( $content.class_validation_messages )|gt( 0 ) )}
+<div class="block" style="border: medium solid red; padding: 1em;">
+	<p style="color: red; font-weight: bold;">{'The following errors occured:'|i18n( 'extension/regexpline/design/standard/class/datatype/edit' )}</p>
+	<ul>
+	{foreach $content.class_validation_messages as $msg}
+		<li>{$msg|wash}</li>
+	{/foreach}
+	</ul>
+</div>
+{/if}
+
 <div class="block">
     <div class="element">
         <div id="regexp_container_{$class_attribute.id}">
