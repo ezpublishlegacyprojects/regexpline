@@ -34,6 +34,7 @@ If no indication is present, version 1.0 contains the feature.
 - Support for has_content in templates [2.1]
 - Stripping of tags with possibility to disable the stripping via the ini file [2.2]
 - Control the size of both a text line and a text area in content/edit [2.2]
+- Error messages in case class validation fails [2.3]
 - Contentclass import & export
 - i18n support
 

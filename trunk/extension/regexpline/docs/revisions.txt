@@ -5,3 +5,4 @@ Repos: http://pubsvn.ez.no/community/trunk/extension/regexpline
 2.0: rev. 956
 2.1: rev. 1026
 2.2: rev. 1137
+2.3: rev. 1230
