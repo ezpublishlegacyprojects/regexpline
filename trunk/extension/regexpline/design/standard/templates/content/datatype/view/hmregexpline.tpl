@@ -1,4 +1,10 @@
-{def $content=$attribute.content
+{def $content=$attribute.content|wash
      $class_content=$attribute.class_content}
-{if $class_content.display_type|eq("area")}<p>{/if}{$content|wash}{if $class_content.display_type|eq("area")}</p>{/if}
+
+{if $class_content.display_type|eq("area")}
+    <p>{$content|nl2br}</p>
+{else}
+    {$content}
+{/if}
+
 {undef $content $class_content}

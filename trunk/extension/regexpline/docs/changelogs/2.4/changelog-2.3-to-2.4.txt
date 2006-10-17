@@ -1,0 +1,12 @@
+General
+*******
+- Release date: TBD
+
+
+Fixes
+*****
+- Fixed: Text area display doesn't respect line breaks
+
+
+Features
+********
