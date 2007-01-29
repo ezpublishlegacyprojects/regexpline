@@ -2,7 +2,7 @@
 
 /*
     Regular Expression datatype for eZ publish 3.x
-    Copyright (C) 2005-2006  Hans Melis
+    Copyright (C) 2005-2007  Hans Melis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
   \class   hmregexplinetype hmregexplinetype.php
   \ingroup eZDatatype
   \brief   Handles the datatype regexpline
-  \version 2.0
+  \version 2.4
   \date    Wednesday 01 March 2006 17:19:23 pm
   \author  Hans Melis
 
@@ -60,7 +60,7 @@ class hmregexplinetype extends eZDataType
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
 
         $regexp = $preset = array();
-        
+
         $this->clearClassErrorMessages( $classAttribute );
 
         if( $http->hasPostVariable( $regexpName ) )
@@ -76,12 +76,12 @@ class hmregexplinetype extends eZDataType
         $content = array( 'regexp' => $regexp,
                           'preset' => $preset );
         $regexp = $this->getRegularExpression( $content );
-        
+
         if( count( $regexp ) == 0 )
         {
             $this->addClassErrorMessage( $classAttribute,
-                ezi18n( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );        
-        	return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                ezi18n( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );
+            return EZ_INPUT_VALIDATOR_STATE_INVALID;
         }
 
         foreach( $regexp as $expr )
@@ -90,7 +90,7 @@ class hmregexplinetype extends eZDataType
 
             if( $check === false )
             {
-            	$this->addClassErrorMessage( $classAttribute,
+                $this->addClassErrorMessage( $classAttribute,
                     ezi18n( 'extension/regexpline/datatype', 'The regular expression "%1" is invalid', null, array( $expr ) ) );
                 return EZ_INPUT_VALIDATOR_STATE_INVALID;
             }
@@ -645,23 +645,23 @@ class hmregexplinetype extends eZDataType
 
         return $content;
     }
-    
+
     function addClassErrorMessage( &$classAttribute, $message )
     {
-    	$content =& $classAttribute->content();
-        
+        $content =& $classAttribute->content();
+
         $content['class_validation_messages'][] = $message;
-        
+
         $classAttribute->setContent( $content );
         $classAttribute->store();
     }
-    
+
     function clearClassErrorMessages( &$classAttribute )
     {
-    	$content =& $classAttribute->content();
-        
+        $content =& $classAttribute->content();
+
         $content['class_validation_messages'] = array();
-        
+
         $classAttribute->setContent( $content );
         $classAttribute->store();
     }

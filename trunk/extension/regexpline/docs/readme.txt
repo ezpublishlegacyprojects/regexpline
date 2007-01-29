@@ -118,7 +118,7 @@ Copyright
 ---------
 
 Regular Expression datatype for eZ publish 3.6+
-Copyright (C) 2005-2006  Hans Melis
+Copyright (C) 2005-2007  Hans Melis
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

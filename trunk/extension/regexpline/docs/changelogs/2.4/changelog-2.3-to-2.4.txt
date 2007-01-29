@@ -1,6 +1,6 @@
 General
 *******
-- Release date: TBD
+- Release date: 29 January 2007
 
 
 Fixes
@@ -10,3 +10,4 @@ Fixes
 
 Features
 ********
+- Added: Info file for eZ publish >= 3.9
