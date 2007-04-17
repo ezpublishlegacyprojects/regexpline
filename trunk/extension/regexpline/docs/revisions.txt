@@ -7,3 +7,4 @@ Repos: http://pubsvn.ez.no/community/trunk/extension/regexpline
 2.2: rev. 1137
 2.3: rev. 1230
 2.4: rev. 1462
+2.5: rev. 1599
