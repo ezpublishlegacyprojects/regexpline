@@ -212,7 +212,8 @@ class hmregexplinetype extends eZDataType
                               'subpattern_count' => 0,
                               'subpatterns' => array(),
                               'naming_pattern' => '',
-                              'display_type' => 'line' );
+                              'display_type' => 'line',
+                              'class_validation_messages' => array() );
         }
 
         if( isset( $content['pattern_selection'] ) )
