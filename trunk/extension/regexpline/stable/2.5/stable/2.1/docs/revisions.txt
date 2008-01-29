@@ -1,6 +1,0 @@
-Repos: http://pubsvn.ez.no/community/trunk/extension/regexpline
-
-1.0: rev. 840
-1.1: rev. 949
-2.0: rev. 956
-2.1: rev. 1026
