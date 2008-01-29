@@ -1,0 +1,16 @@
+General
+*******
+- Release date: 1 March 2006
+
+
+Fixes
+*****
+
+
+Features
+********
+- Added: Multiple regular expressions can be entered
+- Added: Multiple presets can be active
+- Added: Custom error messages per regular expression/preset
+- Added: Display as text line or textarea (in object edit)
+
