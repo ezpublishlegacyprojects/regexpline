@@ -1,0 +1,20 @@
+General
+*******
+- Release date: 30 March 2006
+- Enhanced contentclass view template
+
+
+Fixes
+*****
+- Fixed naming pattern if no subpatterns have been defined
+- Fixed display of object content when using it as a line field
+- Possible fix for excessive whitespace when using text block mode
+- Removed debug
+
+
+Features
+********
+- Added possibility to "negate" regular expressions/presets.
+  (must *not* match this regexp instead of must match)
+- Implemented hasObjectAttributeContent()
+  (has_content in templates)
