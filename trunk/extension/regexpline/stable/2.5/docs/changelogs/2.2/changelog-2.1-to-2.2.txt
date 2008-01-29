@@ -1,0 +1,15 @@
+General
+*******
+- Release date: 11 May 2006
+
+
+Fixes
+*****
+- Fixed: Regular expressions are added to/removed from the first class attribute using this datatype
+# Thanks to Richard Tuin for reporting this issue
+
+
+Features
+********
+- Added stripping of tags with possibility to disable the stripping via the ini file
+- Added possibility to control the size of both a text line and a text area in content/edit

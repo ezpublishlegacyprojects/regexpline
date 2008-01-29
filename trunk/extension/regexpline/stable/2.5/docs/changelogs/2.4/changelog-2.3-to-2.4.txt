@@ -1,0 +1,13 @@
+General
+*******
+- Release date: 29 January 2007
+
+
+Fixes
+*****
+- Fixed: Text area display doesn't respect line breaks
+
+
+Features
+********
+- Added: Info file for eZ publish >= 3.9

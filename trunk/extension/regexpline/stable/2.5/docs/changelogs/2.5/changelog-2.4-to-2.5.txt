@@ -1,0 +1,12 @@
+General
+*******
+- Release date: 17 April 2007
+
+
+Fixes
+*****
+- Fixed: site.ini missing to signal this is an extension with translations
+
+
+Features
+********
