@@ -1,0 +1,4 @@
+General
+*******
+- Initial release
+- Release date: 27 December 2005
