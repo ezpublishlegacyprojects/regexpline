@@ -1,13 +1,12 @@
 <?php
 
 /*
-    Regular Expression datatype for eZ publish 3.x
-    Copyright (C) 2005-2007  Hans Melis
+    Regular Expression datatype for eZ publish 4.x
+    Copyright (C) 2005-2008  Hans Melis
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    it under the terms of the GNU General Public License version 2 as
+    published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,30 +18,26 @@
   \class   hmregexplinetype hmregexplinetype.php
   \ingroup eZDatatype
   \brief   Handles the datatype regexpline
-  \version 2.4
-  \date    Wednesday 01 March 2006 17:19:23 pm
+  \version 3.0
+  \date    Tuesday 29 January 2008 21:58:33
   \author  Hans Melis
 
   By using regexpline you can ... do stuff :)
 
 */
 
-include_once( 'kernel/classes/ezdatatype.php' );
-
-include_once( 'lib/ezutils/classes/ezini.php' );
-
 include_once( 'kernel/common/i18n.php' );
-
-define( 'EZ_DATATYPESTRING_REGEXPLINE', 'hmregexpline' );
 
 class hmregexplinetype extends eZDataType
 {
+    const DATATYPE_STRING = 'hmregexpline';
+
     /*!
       Constructor
     */
     function hmregexplinetype()
     {
-        $this->eZDataType( EZ_DATATYPESTRING_REGEXPLINE,
+        $this->eZDataType( self::DATATYPE_STRING,
                            ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
                            array( 'serialize_supported' => true ) );
 
@@ -54,7 +49,7 @@ class hmregexplinetype extends eZDataType
      \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
              the values are accepted or not
     */
-    function validateClassAttributeHTTPInput( &$http, $base, &$classAttribute )
+    function validateClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $presetName = $base . "_hmregexpline_preset_" . $classAttribute->attribute( 'id' );
@@ -81,7 +76,7 @@ class hmregexplinetype extends eZDataType
         {
             $this->addClassErrorMessage( $classAttribute,
                 ezi18n( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );
-            return EZ_INPUT_VALIDATOR_STATE_INVALID;
+            return eZInputValidator::STATE_INVALID;
         }
 
         foreach( $regexp as $expr )
@@ -92,18 +87,18 @@ class hmregexplinetype extends eZDataType
             {
                 $this->addClassErrorMessage( $classAttribute,
                     ezi18n( 'extension/regexpline/datatype', 'The regular expression "%1" is invalid', null, array( $expr ) ) );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                return eZInputValidator::STATE_INVALID;
             }
         }
 
-        return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
+        return eZInputValidator::STATE_ACCEPTED;
     }
 
     /*!
      Fetches all variables inputed on content class level
      \return true if fetching of class attributes are successfull, false if not
     */
-    function fetchClassAttributeHTTPInput( &$http, $base, &$classAttribute )
+    function fetchClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
         $errorsName = $base . "_hmregexpline_errmsg_" . $classAttribute->attribute( 'id' );
@@ -191,14 +186,14 @@ class hmregexplinetype extends eZDataType
         return true;
     }
 
-    function storeClassAttribute( &$classAttribute, $version )
+    function storeClassAttribute( $classAttribute, $version )
     {
         $content = $classAttribute->content();
 
         $classAttribute->setAttribute( 'data_text5', serialize( $content ) );
     }
 
-    function &classAttributeContent( &$classAttribute )
+    function classAttributeContent( $classAttribute )
     {
         $content = unserialize( $classAttribute->attribute( 'data_text5' ) );
 
@@ -261,7 +256,7 @@ class hmregexplinetype extends eZDataType
      \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
              the values are accepted or not
     */
-    function validateObjectAttributeHTTPInput( &$http, $base, &$contentObjectAttribute )
+    function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         $status = $this->validateAttributeHTTPInput( $http, $base, $contentObjectAttribute, false );
 
@@ -272,7 +267,7 @@ class hmregexplinetype extends eZDataType
      Fetches all variables from the object
      \return true if fetching of class attributes are successfull, false if not
     */
-    function fetchObjectAttributeHTTPInput( &$http, $base, &$contentObjectAttribute )
+    function fetchObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
 
@@ -286,7 +281,7 @@ class hmregexplinetype extends eZDataType
         return false;
     }
 
-    function storeObjectAttribute( &$contentObjectAttribute )
+    function storeObjectAttribute( $contentObjectAttribute )
     {
         $text = $contentObjectAttribute->content();
 
@@ -296,14 +291,14 @@ class hmregexplinetype extends eZDataType
     /*!
      Returns the content.
     */
-    function &objectAttributeContent( &$contentObjectAttribute )
+    function objectAttributeContent( $contentObjectAttribute )
     {
         $text = $contentObjectAttribute->attribute( 'data_text' );
 
         return $text;
     }
 
-    function hasObjectAttributeContent( &$contentObjectAttribute )
+    function hasObjectAttributeContent( $contentObjectAttribute )
     {
         $text = $contentObjectAttribute->attribute( 'data_text' );
         $result = !empty( $text );
@@ -311,10 +306,10 @@ class hmregexplinetype extends eZDataType
         return $result;
     }
 
-    function validateAttributeHTTPInput( &$http, $base, &$objectAttribute, $isInformationCollector = false )
+    function validateAttributeHTTPInput( $http, $base, $objectAttribute, $isInformationCollector = false )
     {
         $textName = $base . "_hmregexpline_data_text_" . $objectAttribute->attribute( 'id' );
-        $classAttribute =& $objectAttribute->contentClassAttribute();
+        $classAttribute = $objectAttribute->contentClassAttribute();
 
         $required = false;
         $must_validate = ( $isInformationCollector == $classAttribute->attribute( 'is_information_collector' ) );
@@ -336,7 +331,7 @@ class hmregexplinetype extends eZDataType
             if( empty( $text ) and ( $required === true && $must_validate === true ) )
             {
                 $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field.' ) );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                return eZInputValidator::STATE_INVALID;
             }
 
             if( !empty( $text ) )
@@ -369,7 +364,7 @@ class hmregexplinetype extends eZDataType
                         }
 
                         $objectAttribute->setValidationError( $msg );
-                        return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                        return eZInputValidator::STATE_INVALID;
                     }
                 }
             }
@@ -379,21 +374,21 @@ class hmregexplinetype extends eZDataType
             if( $required === true && $must_validate === true )
             {
                 $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field.' ) );
-                return EZ_INPUT_VALIDATOR_STATE_INVALID;
+                return eZInputValidator::STATE_INVALID;
             }
         }
 
-        return EZ_INPUT_VALIDATOR_STATE_ACCEPTED;
+        return eZInputValidator::STATE_ACCEPTED;
     }
 
-    function validateCollectionAttributeHTTPInput( &$http, $base, &$objectAttribute )
+    function validateCollectionAttributeHTTPInput( $http, $base, $objectAttribute )
     {
         $status = $this->validateAttributeHTTPInput( $http, $base, $objectAttribute, true );
 
         return $status;
     }
 
-    function fetchCollectionAttributeHTTPInput( &$collection, &$collectionAttribute, &$http, $base, &$contentObjectAttribute )
+    function fetchCollectionAttributeHTTPInput( $collection, $collectionAttribute, $http, $base, $contentObjectAttribute )
     {
         $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
 
@@ -422,7 +417,7 @@ class hmregexplinetype extends eZDataType
     /*!
      Returns the value as it will be shown if this attribute is used in the object name pattern.
     */
-    function title( &$contentObjectAttribute )
+    function title( $contentObjectAttribute, $name = null )
     {
         $classAttribute =& $contentObjectAttribute->contentClassAttribute();
         $classContent = $classAttribute->content();
@@ -484,26 +479,26 @@ class hmregexplinetype extends eZDataType
         return true;
     }
 
-    function &sortKey( &$contentObjectAttribute )
+    function sortKey( $contentObjectAttribute )
     {
         $text = $contentObjectAttribute->content();
 
         return $text;
     }
 
-    function &sortKeyType()
+    function sortKeyType()
     {
         return 'string';
     }
 
-    function serializeContentClassAttribute( &$classAttribute, &$attributeNode, &$attributeParametersNode )
+    function serializeContentClassAttribute( $classAttribute, $attributeNode, $attributeParametersNode )
     {
         $serializedContent = $classAttribute->attribute( 'data_text5' );
 
         $attributeParametersNode->appendChild( eZDOMDocument::createElementCDATANode( 'content', $serializedContent ) );
     }
 
-    function unserializeContentClassAttribute( &$classAttribute, &$attributeNode, &$attributeParametersNode )
+    function unserializeContentClassAttribute( $classAttribute, $attributeNode, $attributeParametersNode )
     {
         $serializedContent = $attributeParametersNode->elementTextContentByName( 'content' );
 
@@ -511,7 +506,7 @@ class hmregexplinetype extends eZDataType
     }
 
 
-    function getRegularExpression( &$classContent )
+    function getRegularExpression( $classContent )
     {
         $regexp = $classContent['regexp'];
 
@@ -552,7 +547,7 @@ class hmregexplinetype extends eZDataType
         return $regexp;
     }
 
-    function getErrorMessage( &$classContent, $index )
+    function getErrorMessage( $classContent, $index )
     {
         $msg = null;
 
@@ -599,11 +594,11 @@ class hmregexplinetype extends eZDataType
         unset( $content['pattern_selection'] );
     }
 
-    function doStripTags( &$objectAttribute )
+    function doStripTags( $objectAttribute )
     {
         if( $this->KeepTags === null )
         {
-            $regIni =& eZINI::instance( 'regexpline.ini' );
+            $regIni = eZINI::instance( 'regexpline.ini' );
 
             if( $regIni->hasVariable( 'GeneralSettings', 'KeepTags' ) )
             {
@@ -627,7 +622,7 @@ class hmregexplinetype extends eZDataType
         }
 
         $shouldStrip = true;
-        $classAttributeID =& $objectAttribute->attribute( 'contentclassattribute_id' );
+        $classAttributeID = $objectAttribute->attribute( 'contentclassattribute_id' );
 
         if( is_array( $this->KeepTags ) && in_array( $classAttributeID, $this->KeepTags ) )
         {
@@ -637,7 +632,7 @@ class hmregexplinetype extends eZDataType
         return $shouldStrip;
     }
 
-    function stripTags( &$objectAttribute, $content )
+    function stripTags( $objectAttribute, $content )
     {
         if( $this->doStripTags( $objectAttribute ) === true )
         {
@@ -647,9 +642,9 @@ class hmregexplinetype extends eZDataType
         return $content;
     }
 
-    function addClassErrorMessage( &$classAttribute, $message )
+    function addClassErrorMessage( $classAttribute, $message )
     {
-        $content =& $classAttribute->content();
+        $content = $classAttribute->content();
 
         $content['class_validation_messages'][] = $message;
 
@@ -657,9 +652,9 @@ class hmregexplinetype extends eZDataType
         $classAttribute->store();
     }
 
-    function clearClassErrorMessages( &$classAttribute )
+    function clearClassErrorMessages( $classAttribute )
     {
-        $content =& $classAttribute->content();
+        $content = $classAttribute->content();
 
         $content['class_validation_messages'] = array();
 
@@ -670,6 +665,6 @@ class hmregexplinetype extends eZDataType
     var $KeepTags = null;
 }
 
-eZDataType::register( EZ_DATATYPESTRING_REGEXPLINE, "hmregexplinetype" );
+eZDataType::register( hmregexplinetype::DATATYPE_STRING, "hmregexplinetype" );
 
 ?>
