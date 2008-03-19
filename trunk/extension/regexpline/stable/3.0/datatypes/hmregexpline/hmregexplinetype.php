@@ -419,7 +419,7 @@ class hmregexplinetype extends eZDataType
     */
     function title( $contentObjectAttribute, $name = null )
     {
-        $classAttribute =& $contentObjectAttribute->contentClassAttribute();
+        $classAttribute = $contentObjectAttribute->contentClassAttribute();
         $classContent = $classAttribute->content();
         $content = $contentObjectAttribute->content();
         $title = "";
