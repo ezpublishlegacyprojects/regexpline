@@ -525,7 +525,7 @@ class hmregexplinetype extends eZDataType
         if( count( $classContent['preset'] ) > 0 )
         {
             $tmpRegexp = array();
-            $ini =& eZINI::instance( 'regexpline.ini' );
+            $ini = eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
 
             foreach( $classContent['preset'] as $preset )
@@ -562,7 +562,7 @@ class hmregexplinetype extends eZDataType
         // Presets override
         if( count( $classContent['preset'] ) > 0 )
         {
-            $ini =& eZINI::instance( 'regexpline.ini' );
+            $ini = eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
             $messages = $ini->variable( 'GeneralSettings', 'ErrorMessages' );
             $msgIndex = $index;
