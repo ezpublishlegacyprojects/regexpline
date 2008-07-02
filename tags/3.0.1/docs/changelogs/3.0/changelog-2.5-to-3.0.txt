@@ -1,0 +1,12 @@
+General
+*******
+- Release date: 29 January 2008
+
+
+Fixes
+*****
+
+
+Features
+********
+- PHP5 support for eZ Publish 4.x series
