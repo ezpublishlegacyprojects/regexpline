@@ -1,0 +1,13 @@
+General
+*******
+- Tag date: 28 March 2008
+
+
+Fixes
+*****
+- Removed unneeded include
+- Switched XML parts to PHP5's DOM extension
+
+
+Features
+********

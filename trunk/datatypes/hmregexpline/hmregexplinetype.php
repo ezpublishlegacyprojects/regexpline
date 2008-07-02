@@ -18,8 +18,8 @@
   \class   hmregexplinetype hmregexplinetype.php
   \ingroup eZDatatype
   \brief   Handles the datatype regexpline
-  \version 3.0
-  \date    Tuesday 29 January 2008 21:58:33
+  \version 3.0.1
+  \date    Friday 28 March 2008 23:20
   \author  Hans Melis
 
   By using regexpline you can ... do stuff :)
@@ -44,11 +44,6 @@ class hmregexplinetype extends eZDataType
         $this->KeepTags = null;
     }
 
-    /*!
-    Validates all variables given on content class level
-     \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
-             the values are accepted or not
-    */
     function validateClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
@@ -94,10 +89,6 @@ class hmregexplinetype extends eZDataType
         return eZInputValidator::STATE_ACCEPTED;
     }
 
-    /*!
-     Fetches all variables inputed on content class level
-     \return true if fetching of class attributes are successfull, false if not
-    */
     function fetchClassAttributeHTTPInput( $http, $base, $classAttribute )
     {
         $regexpName = $base . "_hmregexpline_regexp_" . $classAttribute->attribute( 'id' );
@@ -251,11 +242,6 @@ class hmregexplinetype extends eZDataType
         return $content;
     }
 
-    /*!
-     Validates input on content object level
-     \return EZ_INPUT_VALIDATOR_STATE_ACCEPTED or EZ_INPUT_VALIDATOR_STATE_INVALID if
-             the values are accepted or not
-    */
     function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         $status = $this->validateAttributeHTTPInput( $http, $base, $contentObjectAttribute, false );
@@ -263,10 +249,6 @@ class hmregexplinetype extends eZDataType
         return $status;
     }
 
-    /*!
-     Fetches all variables from the object
-     \return true if fetching of class attributes are successfull, false if not
-    */
     function fetchObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         $textName = $base . "_hmregexpline_data_text_" . $contentObjectAttribute->attribute( 'id' );
@@ -288,9 +270,6 @@ class hmregexplinetype extends eZDataType
         $contentObjectAttribute->setAttribute( 'data_text', $text );
     }
 
-    /*!
-     Returns the content.
-    */
     function objectAttributeContent( $contentObjectAttribute )
     {
         $text = $contentObjectAttribute->attribute( 'data_text' );
@@ -402,9 +381,6 @@ class hmregexplinetype extends eZDataType
         return false;
     }
 
-    /*!
-     Returns the meta data used for storing search indeces.
-    */
     function metaData( $contentObjectAttribute )
     {
         $data = $contentObjectAttribute->attribute( 'data_text' );
@@ -414,12 +390,9 @@ class hmregexplinetype extends eZDataType
         return $data;
     }
 
-    /*!
-     Returns the value as it will be shown if this attribute is used in the object name pattern.
-    */
     function title( $contentObjectAttribute, $name = null )
     {
-        $classAttribute =& $contentObjectAttribute->contentClassAttribute();
+        $classAttribute = $contentObjectAttribute->contentClassAttribute();
         $classContent = $classAttribute->content();
         $content = $contentObjectAttribute->content();
         $title = "";
@@ -466,9 +439,6 @@ class hmregexplinetype extends eZDataType
         return $title;
     }
 
-    /*!
-     \return true if the datatype can be indexed
-    */
     function isIndexable()
     {
         return true;
@@ -495,13 +465,13 @@ class hmregexplinetype extends eZDataType
     {
         $serializedContent = $classAttribute->attribute( 'data_text5' );
 
-        $attributeParametersNode->appendChild( eZDOMDocument::createElementCDATANode( 'content', $serializedContent ) );
+        $doc = $attributeParametersNode->ownerDocument;
+        $attributeParametersNode->appendChild( $doc->createCDATASection( $serializedContent ) );
     }
 
     function unserializeContentClassAttribute( $classAttribute, $attributeNode, $attributeParametersNode )
     {
-        $serializedContent = $attributeParametersNode->elementTextContentByName( 'content' );
-
+        $serializedContent = $attributeParametersNode->firstChild->nodeValue;
         $classAttribute->setAttribute( 'data_text5', $serializedContent );
     }
 
@@ -525,7 +495,7 @@ class hmregexplinetype extends eZDataType
         if( count( $classContent['preset'] ) > 0 )
         {
             $tmpRegexp = array();
-            $ini =& eZINI::instance( 'regexpline.ini' );
+            $ini = eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
 
             foreach( $classContent['preset'] as $preset )
@@ -562,7 +532,7 @@ class hmregexplinetype extends eZDataType
         // Presets override
         if( count( $classContent['preset'] ) > 0 )
         {
-            $ini =& eZINI::instance( 'regexpline.ini' );
+            $ini = eZINI::instance( 'regexpline.ini' );
             $presets = $ini->variable( 'GeneralSettings', 'RegularExpressions' );
             $messages = $ini->variable( 'GeneralSettings', 'ErrorMessages' );
             $msgIndex = $index;
@@ -602,9 +572,6 @@ class hmregexplinetype extends eZDataType
 
             if( $regIni->hasVariable( 'GeneralSettings', 'KeepTags' ) )
             {
-                include_once( 'kernel/classes/ezcontentobjecttreenode.php' );
-                // Don't ask why they've put that function in there :-s
-
                 $keepTags = $regIni->variable( 'GeneralSettings', 'KeepTags' );
                 $keepTagsResult = array();
 
