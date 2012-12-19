@@ -38,7 +38,7 @@ class hmregexplinetype extends eZDataType
     function hmregexplinetype()
     {
         $this->eZDataType( self::DATATYPE_STRING,
-                           ezi18n( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
+                           ezpI18n::tr( 'extension/regexpline/datatype', 'Regular Expression Text', 'Datatype name' ),
                            array( 'serialize_supported' => true ) );
 
         $this->KeepTags = null;
@@ -70,7 +70,7 @@ class hmregexplinetype extends eZDataType
         if( count( $regexp ) == 0 )
         {
             $this->addClassErrorMessage( $classAttribute,
-                ezi18n( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );
+                ezpI18n::tr( 'extension/regexpline/datatype', 'You need at least one regular expression or selected preset' ) );
             return eZInputValidator::STATE_INVALID;
         }
 
@@ -81,7 +81,7 @@ class hmregexplinetype extends eZDataType
             if( $check === false )
             {
                 $this->addClassErrorMessage( $classAttribute,
-                    ezi18n( 'extension/regexpline/datatype', 'The regular expression "%1" is invalid', null, array( $expr ) ) );
+                    ezpI18n::tr( 'extension/regexpline/datatype', 'The regular expression "%1" is invalid', null, array( $expr ) ) );
                 return eZInputValidator::STATE_INVALID;
             }
         }
@@ -309,7 +309,7 @@ class hmregexplinetype extends eZDataType
 
             if( empty( $text ) and ( $required === true && $must_validate === true ) )
             {
-                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field.' ) );
+                $objectAttribute->setValidationError( ezpI18n::tr( 'extension/regexpline/datatype', 'This is a required field.' ) );
                 return eZInputValidator::STATE_INVALID;
             }
 
@@ -339,7 +339,7 @@ class hmregexplinetype extends eZDataType
 
                         if( $msg === null )
                         {
-                            $msg = ezi18n( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' );
+                            $msg = ezpI18n::tr( 'extension/regexpline/datatype', 'Your input did not meet the requirements.' );
                         }
 
                         $objectAttribute->setValidationError( $msg );
@@ -352,7 +352,7 @@ class hmregexplinetype extends eZDataType
         {
             if( $required === true && $must_validate === true )
             {
-                $objectAttribute->setValidationError( ezi18n( 'extension/regexpline/datatype', 'This is a required field.' ) );
+                $objectAttribute->setValidationError( ezpI18n::tr( 'extension/regexpline/datatype', 'This is a required field.' ) );
                 return eZInputValidator::STATE_INVALID;
             }
         }
